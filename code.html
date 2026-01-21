@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Will You Be My Valentine? 💛💙😽</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Comic+Neue:wght@700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #fffacd, #e6f0ff, #f0f8ff);
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #1e40af;
+      touch-action: manipulation;
+    }
+
+    .container {
+      text-align: center;
+      padding: 5vw 6vw;
+      background: rgba(255, 255, 255, 0.88);
+      border-radius: 28px;
+      box-shadow: 0 10px 40px rgba(59, 130, 246, 0.25);
+      max-width: 92%;
+      backdrop-filter: blur(10px);
+      border: 3px solid #60a5fa;
+      animation: float 7s ease-in-out infinite;
+      position: relative;
+      z-index: 2;
+    }
+
+    .main-gif {
+      max-width: 60%;
+      margin: 0 auto 4vw;
+      display: block;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(59, 130, 246, 0.3);
+    }
+
+    .celebration-gif, .reject-gif {
+      max-width: 70%;
+      margin: 4vw auto;
+      display: block;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
+    }
+
+    h1 {
+      font-family: 'Comic Neue', cursive;
+      font-size: clamp(2.6rem, 9vw, 4.2rem);
+      margin-bottom: 4vw;
+      color: #1d4ed8;
+      text-shadow: 3px 3px 0 #fff, 5px 5px 0 #bfdbfe;
+      line-height: 1.15;
+    }
+
+    .heart-beat {
+      display: inline-block;
+      animation: heartbeat 1.4s infinite;
+    }
+
+    .input-area {
+      margin-top: 6vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3vw;
+    }
+
+    input[type="text"] {
+      font-size: clamp(1.2rem, 5vw, 1.6rem);
+      padding: 14px 20px;
+      width: 80%;
+      max-width: 400px;
+      border: 3px solid #60a5fa;
+      border-radius: 999px;
+      outline: none;
+      text-align: center;
+      background: #f0f8ff;
+      color: #1e40af;
+    }
+
+    button#submitBtn {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(1.3rem, 5vw, 1.8rem);
+      font-weight: 700;
+      padding: 16px 60px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    button#submitBtn:hover,
+    button#submitBtn:active {
+      background: #2563eb;
+      transform: scale(1.08) translateY(-4px);
+    }
+
+    #feedback {
+      font-size: clamp(1.1rem, 4vw, 1.4rem);
+      margin-top: 3vw;
+      min-height: 2em;
+      color: #1d4ed8;
+    }
+
+    .floating-hearts {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: clamp(1.2rem, 4vw, 2.2rem);
+      animation: floatUp linear infinite;
+      opacity: 0.8;
+      color: #3b82f6;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.28); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(110vh) rotate(0deg); opacity: 0.8; }
+      100% { transform: translateY(-25vh) rotate(720deg); opacity: 0; }
+    }
+
+    @media (min-width: 600px) {
+      .input-area {
+        flex-direction: row;
+        justify-content: center;
+        gap: 2vw;
+      }
+      input[type="text"] {
+        width: 50%;
+        max-width: 500px;
+      }
+      .main-gif, .celebration-gif, .reject-gif {
+        max-width: 45%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="floating-hearts" id="hearts"></div>
+
+  <div class="container">
+    <img src="https://media.tenor.com/AQ8I3RASlLcAAAAi/mochi-love-you.gif" 
+         alt="Cute Mochi cat saying love you" class="main-gif">
+
+    <h1>Will you be<br><span class="heart-beat">my Valentine?</span> 💛💙😽</h1>
+
+    <div class="input-area">
+      <input type="text" id="answerInput" placeholder="Type Your Answer..." autocomplete="off">
+      <button id="submitBtn">Submit 💕</button>
+    </div>
+
+    <div id="feedback"></div>
+  </div>
+
+  <script>
+    const answerInput = document.getElementById('answerInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const feedback = document.getElementById('feedback');
+    const container = document.querySelector('.container');
+
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1396015583421792267/L6dqZqusg0OYRsGea72wObR_6shinPcjPYxSTm80O7kIaEDiOdAT2jIGwpZsBVF-Do4W";
+
+    const yesKeywords = ['yes', 'ye', 'yah', 'yep', 'yeah', 'yay', 'sure', 'ok', 'okay'];
+    const noKeywords = ['no', 'nah', 'nope', 'nono', 'nooo'];
+
+    // 🔊 AUDIO (ADDED ONLY)
+    const yayMusic = new Audio('glue-song.mp3');
+    yayMusic.volume = 0.8;
+
+    async function sendToDiscord(message) {
+      try {
+        await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            content: message,
+            username: "Valentine Bot",
+            avatar_url: "https://media.tenor.com/AQ8I3RASlLcAAAAi/mochi-love-you.gif"
+          })
+        });
+      } catch (err) {
+        console.log("Webhook failed:", err);
+      }
+    }
+
+    const checkAnswer = () => {
+      const text = answerInput.value.trim();
+      const lowerText = text.toLowerCase();
+
+      if (!text) {
+        feedback.textContent = "Don't leave me hanging... 🥺";
+        return;
+      }
+
+      const hasYes = yesKeywords.some(kw => lowerText.includes(kw));
+      const hasNo = noKeywords.some(kw => lowerText.includes(kw));
+
+      if (hasYes) {
+        sendToDiscord(`💕 YES! Someone said: "${text}"`);
+
+        // 🔊 PLAY MUSIC ON YAY PAGE
+        yayMusic.currentTime = 0;
+        yayMusic.play().catch(() => {});
+
+        container.innerHTML = `
+          <h1 style="font-size: clamp(3rem, 12vw, 5.5rem); margin: 4vw 0; color:#1d4ed8;">
+            YAYYYY THANK YOUUUSUSU😽😽😽<br>
+            💛💙💛💙
+          </h1>
+          <img src="https://media.tenor.com/ivKWdfdbV3EAAAAi/goma-goma-cat.gif" 
+               alt="Excited Goma cat celebration" class="celebration-gif">
+          <div style="font-size: clamp(1.8rem, 7vw, 2.8rem); margin-top: 4vw;">
+            ෆ⃛ ෆ⃛ ෆ⃛ 😽😽😽
+          </div>
+        `;
+        createHearts(120);
+        confettiRain();
+
+      } else if (hasNo) {
+        feedback.innerHTML = `
+          Incorrect answer! Try again 😿<br>
+          <img src="https://media.tenor.com/4Z3q1g6Z0bAAAAAi/cat-no.gif" 
+               alt="Sad cat saying no" class="reject-gif">
+        `;
+        answerInput.value = '';
+      } else {
+        feedback.textContent = "Hmm... please say yes or no cutely? 🥺💕";
+      }
+    };
+
+    submitBtn.addEventListener('click', checkAnswer);
+
+    answerInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        checkAnswer();
+      }
+    });
+
+    function createHearts(count = 12) {
+      const heartsContainer = document.getElementById('hearts') || document.createElement('div');
+      if (!document.getElementById('hearts')) {
+        heartsContainer.id = 'hearts';
+        heartsContainer.className = 'floating-hearts';
+        document.body.appendChild(heartsContainer);
+      }
+      for (let i = 0; i < count; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.innerHTML = ['💛','💙','🩵','✧˖°','♡','💫','🫶','😽'][Math.floor(Math.random()*8)];
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (Math.random() * 10 + 7) + 's';
+        heart.style.animationDelay = Math.random() * 5 + 's';
+        heartsContainer.appendChild(heart);
+        setTimeout(() => heart.remove(), 16000);
+      }
+    }
+
+    function confettiRain() {
+      for (let i = 0; i < 160; i++) {
+        setTimeout(() => {
+          const conf = document.createElement('div');
+          conf.innerHTML = ['💛','💙','✨','🌟','🫶','💫','😽'][Math.floor(Math.random()*7)];
+          conf.style.position = 'fixed';
+          conf.style.left = Math.random() * 100 + 'vw';
+          conf.style.top = '-15vh';
+          conf.style.fontSize = (Math.random() * 2.8 + 1.6) + 'rem';
+          conf.style.pointerEvents = 'none';
+          conf.style.zIndex = '999';
+          document.body.appendChild(conf);
+
+          const fall = Math.random() * 6 + 4.5;
+          conf.animate([
+            { transform: 'translateY(-15vh) rotate(0deg)', opacity: 1 },
+            { transform: `translateY(130vh) rotate(${Math.random()*1440-720}deg)`, opacity: 0 }
+          ], { duration: fall * 1000, easing: 'linear' });
+
+          setTimeout(() => conf.remove(), fall * 1000 + 1500);
+        }, i * 30);
+      }
+    }
+
+    setInterval(() => createHearts(4), 2000);
+    createHearts(30);
+  </script>
+</body>
+</html>
